@@ -80,3 +80,6 @@ class Infection(object):
 
 res = Infection()
 r = res.Main()
+
+# comments
+# 추가된 infect에 대해서만 검사를 하면 되는가?
