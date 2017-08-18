@@ -8,7 +8,7 @@ DEBUG = False
 
 class Infection(object):
     def transToHash(self, a, b):
-        return a * WIDTH + b
+        return str(a * WIDTH + b)
 
     def Main(self):
         fin = open(infile, 'r')
@@ -24,57 +24,106 @@ class Infection(object):
             if DEBUG:
                 print(infects)
             time = 0
+            isFirst = True
+            addlist = dict()
             while True:
                 isInfection = False
-                addlist = dict()
-                for key in infects.keys():
-                    k = infects.get(key)
+                if isFirst:
+                    for key in infects.keys():
+                        k = infects.get(key)
+                        if DEBUG:
+                            print("target = ", k[0], k[1])
+                        # k[0] - 1, k[1]
+                        if infects.get(self.transToHash(k[0] - 1, k[1])) == None:
+                            if infects.get(self.transToHash(k[0] - 1, k[1] + 1)) != None or infects.get(self.transToHash(k[0] - 2, k[1])) != None or infects.get(self.transToHash(k[0] - 1, k[1] - 1)) != None:
+                                isInfection = True
+                                addlist[ (k[0] - 1, k[1]) ] = [k[0] - 1, k[1]]
+                                if DEBUG:
+                                    print("up")
+
+                        # k[0] + 1, k[1]
+                        if infects.get(self.transToHash(k[0] + 1, k[1])) == None:
+                            if infects.get(self.transToHash(k[0] + 1, k[1] - 1)) != None or infects.get(self.transToHash(k[0] + 2, k[1])) != None or infects.get(self.transToHash(k[0] + 1, k[1] + 1)) != None:
+                                isInfection = True
+                                addlist[ (k[0] + 1, k[1]) ] = [k[0] + 1, k[1]]
+                                if DEBUG:
+                                    print("down")
+
+                        # k[0], k[1] - 1
+                        if infects.get(self.transToHash(k[0], k[1] - 1)) == None:
+                            if infects.get(self.transToHash(k[0] - 1, k[1] - 1)) != None or infects.get(self.transToHash(k[0], k[1] - 2)) != None or infects.get(self.transToHash(k[0] + 1, k[1] - 1)) != None:
+                                isInfection = True
+                                addlist[ (k[0], k[1] - 1) ] = [k[0], k[1] - 1]
+                                if DEBUG:
+                                    print("left")
+
+                        # k[0], k[1] + 1
+                        if infects.get(self.transToHash(k[0], k[1] + 1)) == None:
+                            if infects.get(self.transToHash(k[0] - 1, k[1] + 1)) != None or infects.get(self.transToHash(k[0], k[1] + 2)) != None or infects.get(self.transToHash(k[0] + 1, k[1] + 1)) != None:
+                                isInfection = True
+                                addlist[ (k[0], k[1] + 1) ] = [k[0], k[1] + 1]
+                                if DEBUG:
+                                    print("right")
+                    isFirst = False
+                    if not isInfection:
+                        break
+                    time += 1
+                    for item in addlist.keys():
+                        infects[ self.transToHash(item[0], item[1]) ] = [item[0], item[1]]
+                    continue
+                else:
                     if DEBUG:
-                        print("target = ", k[0], k[1])
-                    # k[0] - 1, k[1]
-                    if infects.get(self.transToHash(k[0] - 1, k[1])) == None:
-                        if infects.get(self.transToHash(k[0] - 1, k[1] + 1)) != None or infects.get(self.transToHash(k[0] - 2, k[1])) != None or infects.get(self.transToHash(k[0] - 1, k[1] - 1)) != None:
-                            isInfection = True
-                            addlist[ (k[0] - 1, k[1]) ] = 1
-                            if DEBUG:
-                                print("up")
+                        print(addlist)
+                    changelist = dict()
+                    for k in addlist.keys():
+                        if DEBUG:
+                            print("k = ", k)
+                            print("target = ", k[0], k[1])
+                        # k[0] - 1, k[1]
+                        if infects.get(self.transToHash(k[0] - 1, k[1])) == None:
+                            if k[0]-2 >= 0 and k[1] -2 >= 0 and k[0]+2 <= WIDTH and k[1]+2 <= WIDTH and (infects.get(self.transToHash(k[0] - 1, k[1] + 1)) != None or infects.get(self.transToHash(k[0] - 2, k[1])) != None or infects.get(self.transToHash(k[0] - 1, k[1] - 1)) != None):
+                                isInfection = True
+                                changelist[ (k[0] - 1, k[1]) ] = [k[0] - 1, k[1]]
+                                if DEBUG:
+                                    print("up")
 
-                    # k[0] + 1, k[1]
-                    if infects.get(self.transToHash(k[0] + 1, k[1])) == None:
-                        if infects.get(self.transToHash(k[0] + 1, k[1] - 1)) != None or infects.get(self.transToHash(k[0] + 2, k[1])) != None or infects.get(self.transToHash(k[0] + 1, k[1] + 1)) != None:
-                            isInfection = True
-                            addlist[ (k[0] + 1, k[1]) ] = 1
-                            if DEBUG:
-                                print("down")
+                        # k[0] + 1, k[1]
+                        if infects.get(self.transToHash(k[0] + 1, k[1])) == None:
+                            if k[0]-2 >= 0 and k[1] -2 >= 0 and k[0]+2 <= WIDTH and k[1]+2 <= WIDTH and (infects.get(self.transToHash(k[0] + 1, k[1] - 1)) != None or infects.get(self.transToHash(k[0] + 2, k[1])) != None or infects.get(self.transToHash(k[0] + 1, k[1] + 1)) != None):
+                                isInfection = True
+                                changelist[ (k[0] + 1, k[1]) ] = [k[0] + 1, k[1]]
+                                if DEBUG:
+                                    print("down")
 
-                    # k[0], k[1] - 1
-                    if infects.get(self.transToHash(k[0], k[1] - 1)) == None:
-                        if infects.get(self.transToHash(k[0] - 1, k[1] - 1)) != None or infects.get(self.transToHash(k[0], k[1] - 2)) != None or infects.get(self.transToHash(k[0] + 1, k[1] - 1)) != None:
-                            isInfection = True
-                            addlist[ (k[0], k[1] - 1) ] = 1
-                            if DEBUG:
-                                print("left")
+                        # k[0], k[1] - 1
+                        if infects.get(self.transToHash(k[0], k[1] - 1)) == None:
+                            if k[0]-2 >= 0 and k[1] -2 >= 0 and k[0]+2 <= WIDTH and k[1]+2 <= WIDTH and (infects.get(self.transToHash(k[0] - 1, k[1] - 1)) != None or infects.get(self.transToHash(k[0], k[1] - 2)) != None or infects.get(self.transToHash(k[0] + 1, k[1] - 1)) != None):
+                                isInfection = True
+                                changelist[ (k[0], k[1] - 1) ] = [k[0], k[1] - 1]
+                                if DEBUG:
+                                    print("left")
 
-                    # k[0], k[1] + 1
-                    if infects.get(self.transToHash(k[0], k[1] + 1)) == None:
-                        if infects.get(self.transToHash(k[0] - 1, k[1] + 1)) != None or infects.get(self.transToHash(k[0], k[1] + 2)) != None or infects.get(self.transToHash(k[0] + 1, k[1] + 1)) != None:
-                            isInfection = True
-                            addlist[ (k[0], k[1] + 1) ] = 1
-                            if DEBUG:
-                                print("right")
-
-                if not isInfection:
-                    break
-                # apply changes
-                for item in addlist.keys():
-                    infects[ self.transToHash(item[0], item[1]) ] = [item[0], item[1]]
-                if DEBUG:
-                    print(addlist)
-                    t = input()
-
-                time += 1
+                        # k[0], k[1] + 1
+                        if infects.get(self.transToHash(k[0], k[1] + 1)) == None:
+                            if k[0]-2 >= 0 and k[1] -2 >= 0 and k[0]+2 <= WIDTH and k[1]+2 <= WIDTH and (infects.get(self.transToHash(k[0] - 1, k[1] + 1)) != None or infects.get(self.transToHash(k[0], k[1] + 2)) != None or infects.get(self.transToHash(k[0] + 1, k[1] + 1)) != None):
+                                isInfection = True
+                                changelist[ (k[0], k[1] + 1) ] = [k[0], k[1] + 1]
+                                if DEBUG:
+                                    print("right")
+                    if not isInfection:
+                        break
+                    # apply changes
+                    for item in changelist.keys():
+                        infects[ self.transToHash(item[0], item[1]) ] = [item[0], item[1]]
+                    if DEBUG:
+                        print(addlist)
+                        print(changelist)
+                    addlist = changelist
+                    time += 1
+                
             fout.write(str(time)+'\n')
             print(time)
+            #temp = input()
         fin.close()
         fout.close()
 
