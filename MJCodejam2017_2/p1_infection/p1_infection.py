@@ -56,6 +56,8 @@ class Infection(object):
                 # apply changes
                 for item in addlist:
                     infects[ self.transToHash(item[0], item[1]) ] = [item[0], item[1]]
+                print(addlist)
+                
                 time += 1
             fout.write(time+'\n')
             print(time)
