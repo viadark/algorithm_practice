@@ -1,14 +1,14 @@
 import sys
 import math
 
-WIDTH = math.pow(10, 9)
+WIDTH = int(math.pow(10, 12))
 infile = sys.argv[1]
 outfile = sys.argv[1].split('.')[0] + '.out'
 DEBUG = False
 
 class Infection(object):
     def transToHash(self, a, b):
-        return str(a * WIDTH + b)
+        return int(a * WIDTH) + int(b)
 
     def Main(self):
         fin = open(infile, 'r')
@@ -58,6 +58,8 @@ class Infection(object):
                                     print("left")
 
                         # k[0], k[1] + 1
+                        #print(k[0], k[1]+1)
+                        #print("self = ", self.transToHash(k[0], k[1] + 1))
                         if infects.get(self.transToHash(k[0], k[1] + 1)) == None:
                             if infects.get(self.transToHash(k[0] - 1, k[1] + 1)) != None or infects.get(self.transToHash(k[0], k[1] + 2)) != None or infects.get(self.transToHash(k[0] + 1, k[1] + 1)) != None:
                                 isInfection = True
@@ -65,11 +67,14 @@ class Infection(object):
                                 if DEBUG:
                                     print("right")
                     isFirst = False
+                    #print(infects)
+                    #print(len(infects))
                     if not isInfection:
                         break
                     time += 1
                     for item in addlist.keys():
                         infects[ self.transToHash(item[0], item[1]) ] = [item[0], item[1]]
+                    
                     continue
                 else:
                     if DEBUG:
