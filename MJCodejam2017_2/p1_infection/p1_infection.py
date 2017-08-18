@@ -26,7 +26,7 @@ class Infection(object):
             time = 0
             while True:
                 isInfection = False
-                addlist = list()
+                addlist = dict()
                 for key in infects.keys():
                     k = infects.get(key)
                     if DEBUG:
@@ -35,7 +35,7 @@ class Infection(object):
                     if infects.get(self.transToHash(k[0] - 1, k[1])) == None:
                         if infects.get(self.transToHash(k[0] - 1, k[1] + 1)) != None or infects.get(self.transToHash(k[0] - 2, k[1])) != None or infects.get(self.transToHash(k[0] - 1, k[1] - 1)) != None:
                             isInfection = True
-                            addlist.append([k[0] - 1, k[1]])
+                            addlist[ (k[0] - 1, k[1]) ] = 1
                             if DEBUG:
                                 print("up")
 
@@ -43,7 +43,7 @@ class Infection(object):
                     if infects.get(self.transToHash(k[0] + 1, k[1])) == None:
                         if infects.get(self.transToHash(k[0] + 1, k[1] - 1)) != None or infects.get(self.transToHash(k[0] + 2, k[1])) != None or infects.get(self.transToHash(k[0] + 1, k[1] + 1)) != None:
                             isInfection = True
-                            addlist.append([k[0] + 1, k[1]])
+                            addlist[ (k[0] + 1, k[1]) ] = 1
                             if DEBUG:
                                 print("down")
 
@@ -51,7 +51,7 @@ class Infection(object):
                     if infects.get(self.transToHash(k[0], k[1] - 1)) == None:
                         if infects.get(self.transToHash(k[0] - 1, k[1] - 1)) != None or infects.get(self.transToHash(k[0], k[1] - 2)) != None or infects.get(self.transToHash(k[0] + 1, k[1] - 1)) != None:
                             isInfection = True
-                            addlist.append([k[0], k[1] - 1])
+                            addlist[ (k[0], k[1] - 1) ] = 1
                             if DEBUG:
                                 print("left")
 
@@ -59,14 +59,14 @@ class Infection(object):
                     if infects.get(self.transToHash(k[0], k[1] + 1)) == None:
                         if infects.get(self.transToHash(k[0] - 1, k[1] + 1)) != None or infects.get(self.transToHash(k[0], k[1] + 2)) != None or infects.get(self.transToHash(k[0] + 1, k[1] + 1)) != None:
                             isInfection = True
-                            addlist.append([k[0], k[1] + 1])
+                            addlist[ (k[0], k[1] + 1) ] = 1
                             if DEBUG:
                                 print("right")
 
                 if not isInfection:
                     break
                 # apply changes
-                for item in addlist:
+                for item in addlist.keys():
                     infects[ self.transToHash(item[0], item[1]) ] = [item[0], item[1]]
                 if DEBUG:
                     print(addlist)
