@@ -1,3 +1,6 @@
+# 2025 프로그래머스 코드 챌린지 2차 예선
+# 완전 범죄
+
 def solution(info, n, m):
     global minval, check
     check = set()
@@ -16,10 +19,10 @@ def solution(info, n, m):
             sb += info[depth][1]
             if sb >= m:
                 return
-        if (sa, sb, depth) in check:
+        if (sa, sb, depth) in check: # <-- 이 부분이 킥임, 같은 depth상태에서 sa, sb가 동일하다면 이후 결과는 스킵 해도 무방하다는 것..
             return
+        check.add((sa, sb, depth)) # 저장을 꼭 기준 숫자로만 해야 하는것이 아니라 결과값을 메모해도 좋은 결과가 있음
 
-        check.add((sa, sb, depth))
         if depth == len(info) - 1:
             #print(ret, sa, sb)
             minval = min(minval, sa)
